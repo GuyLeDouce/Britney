@@ -47,7 +47,7 @@ client.on("messageCreate", async (message) => {
   const hasSticker = message.stickers?.has("1471848176183934976");
   const isMentioned = message.mentions.has(client.user);
   const nameRegex =
-    /\b(brit|britney|brittney|brittany|britany|britni|britnee|brittnie)\b(?:'s|\u2019s)?/i;
+    /\b(brit|britt|britney|brittney|brittany|britany|britni|britnee|brittnie)\b(?:'s|\u2019s)?/i;
   const hasName = nameRegex.test(message.content);
 
   let isReplyToBot = false;
