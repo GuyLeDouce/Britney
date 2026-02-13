@@ -14,12 +14,23 @@ const client = new Client({
   ],
 });
 
-const allowedPhrases = new Set([
+const responsePhrases = [
   "meow",
   "meow meow meow",
   "meow meow meow... meow",
   "meow? meow meow!",
-]);
+];
+let lastResponse = null;
+
+function pickResponse() {
+  if (responsePhrases.length === 1) return responsePhrases[0];
+  let next = responsePhrases[Math.floor(Math.random() * responsePhrases.length)];
+  while (next === lastResponse) {
+    next = responsePhrases[Math.floor(Math.random() * responsePhrases.length)];
+  }
+  lastResponse = next;
+  return next;
+}
 
 client.once("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
@@ -35,7 +46,8 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
   const hasSticker = message.stickers?.has("1471848176183934976");
   const isMentioned = message.mentions.has(client.user);
-  const nameRegex = /\b(britney|brittany|britany|britni|britnee|brittnie|britney)\b(?:'s|’s)?/i;
+  const nameRegex =
+    /\b(britney|brittany|britany|britni|britnee|brittnie)\b(?:'s|\u2019s)?/i;
   const hasName = nameRegex.test(message.content);
 
   let isReplyToBot = false;
@@ -52,7 +64,7 @@ client.on("messageCreate", async (message) => {
 
   if (!hasSticker && !isMentioned && !isReplyToBot && !hasName) return;
 
-  await message.reply("meow");
+  await message.reply(pickResponse());
 });
 
 client.login(token);
