@@ -34,17 +34,23 @@ client.once("clientReady", () => {
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
   const hasSticker = message.stickers?.has("1471848176183934976");
+  const isMentioned = message.mentions.has(client.user);
+  const nameRegex = /\b(britney|brittany|britany|britni|britnee|brittnie|britney)\b(?:'s|’s)?/i;
+  const hasName = nameRegex.test(message.content);
 
-  if (!hasSticker && !message.mentions.has(client.user)) return;
+  let isReplyToBot = false;
+  if (message.reference?.messageId) {
+    try {
+      const repliedTo = await message.channel.messages.fetch(
+        message.reference.messageId,
+      );
+      isReplyToBot = repliedTo.author?.id === client.user.id;
+    } catch {
+      // Ignore fetch failures; treat as not a bot reply.
+    }
+  }
 
-  const mentionRegex = new RegExp(`<@!?${client.user.id}>`, "g");
-  const cleaned = message.content
-    .replace(mentionRegex, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
-
-  if (!hasSticker && !allowedPhrases.has(cleaned)) return;
+  if (!hasSticker && !isMentioned && !isReplyToBot && !hasName) return;
 
   await message.reply("meow");
 });
