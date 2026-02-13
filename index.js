@@ -21,7 +21,7 @@ const allowedPhrases = new Set([
   "meow? meow meow!",
 ]);
 
-client.once("ready", () => {
+client.once("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
 
   // Presence (optional)
